@@ -19,6 +19,7 @@ public class Populator {
         if(admin.getUserPass().equals("test")||user.getUserPass().equals("test"))
             throw new UnsupportedOperationException("You have not changed the passwords");
 
+
         em.getTransaction().begin();
         Role userRole = new Role("user");
         Role adminRole = new Role("admin");
