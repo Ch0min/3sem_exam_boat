@@ -20,7 +20,6 @@ public class UserFacadeTest {
 
     User u1, u2;
 
-
     public UserFacadeTest() throws ParseException {
     }
 

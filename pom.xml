@@ -7,7 +7,7 @@
     <version>1.0.1</version>
     <packaging>war</packaging>
 
-    <name>harbour_system</name>
+    <name>harbour_exercise</name>
 
 
     <properties>
