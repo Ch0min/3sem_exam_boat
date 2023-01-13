@@ -1,5 +1,6 @@
 package datafacades;
 
+import entities.Owner;
 import entities.Role;
 import entities.User;
 import errorhandling.API_Exception;
@@ -74,13 +75,13 @@ public class UserFacade {
 
     public User createUser(User user) throws API_Exception {
         EntityManager em = getEntityManager();
-        user.addRole(new Role("user")); //Can also be done in frontend
+        user.addRole(new Role("user")); // Can also be done in frontend
         try {
             em.getTransaction().begin();
             em.persist(user);
             em.getTransaction().commit();
         } catch (Exception e) {
-            throw new API_Exception("Can't creaste user. There's already a user with the username: " + user.getUserName() + " in the system");
+            throw new API_Exception("Can't create user. There's already a user with the username: " + user.getUserName() + " in the system");
         } finally {
             em.close();
         }
@@ -89,17 +90,19 @@ public class UserFacade {
 
     public User updateUser(User user) throws API_Exception {
         EntityManager em = getEntityManager();
+
         try {
+            em.find(User.class, user.getUserName());
             em.getTransaction().begin();
-            user.addRole(new Role("user")); //Could make a new method where you can assign new roles, otherwise it's always "user"
-            User u = em.merge(user);
+            user.addRole(new Role("user")); // Could make a new method where you can assign new roles, otherwise it's always "user"
+            em.merge(user);
             em.getTransaction().commit();
-            return u;
         } catch (Exception e) {
-            throw new API_Exception("Can't update a user with the username: "+user.getUserName(), 400, e);
+            throw new API_Exception("Can't find a user with the username to update: " + user.getUserName(), 400, e);
         } finally {
             em.close();
         }
+        return user;
     }
 
     public User deleteUser(String userName) throws API_Exception {
@@ -112,7 +115,7 @@ public class UserFacade {
             em.getTransaction().commit();
         } catch (Exception e) {
             if (user == null) {
-                throw new API_Exception("Can't delete a user with the username: " + userName, 400, e);
+                throw new API_Exception("Can't find a user with the username to delete: " + userName, 400, e);
             }
         } finally {
             em.close();

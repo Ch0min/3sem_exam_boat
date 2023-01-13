@@ -11,7 +11,7 @@ public class UserDTO {
     private String userName;
     private String userEmail;
     private String userPass;
-    private List<String> roleList;
+    private List<String> roles;
 
     public UserDTO(User user){
         if(user.getUserName() != null){
@@ -19,7 +19,7 @@ public class UserDTO {
         }
         this.userEmail = user.getUserEmail();
         this.userPass = user.getUserPass();
-        this.roleList = user.getRolesAsStrings();
+        this.roles = user.getRolesAsStrings();
     }
 
     public User getEntity(){
@@ -63,14 +63,13 @@ public class UserDTO {
         this.userPass = userPass;
     }
 
-    public List<String> getRoleList() {
-        return roleList;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setRoleList(List<String> roleList) {
-        this.roleList = roleList;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -91,7 +90,7 @@ public class UserDTO {
                 "userName='" + userName + '\'' +
                 ", userEmail='" + userEmail + '\'' +
                 ", userPass='" + userPass + '\'' +
-                ", roleList=" + roleList +
+                ", roleList=" + roles +
                 '}';
     }
 }

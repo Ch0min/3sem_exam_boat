@@ -16,27 +16,26 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
     @NotNull
     @Column(name = "user_name", length = 25)
     private String userName;
 
-    @Basic(optional = false)
     @NotNull
     @Column(name = "user_email")
     private String userEmail;
 
-    @Basic(optional = false)
     @NotNull
     @Column(name = "user_pass")
     private String userPass;
 
-    @JoinTable(name = "user_roles", joinColumns = {
-            @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
-            @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
-    @ManyToMany
-    private List<Role> roleList = new ArrayList<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Owner owner;
 
+    @ManyToMany
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_name"),
+            inverseJoinColumns = @JoinColumn(name = "role_name"))
+    private List<Role> roles = new ArrayList<>();
 
     public User() {
     }
@@ -46,10 +45,10 @@ public class User implements Serializable {
         this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
     }
 
-    public User(String userName, String userPass, List<Role> roleList) {
+    public User(String userName, String userPass, List<Role> roles) {
         this.userName = userName;
         this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
-        this.roleList = roleList;
+        this.roles = roles;
     }
 
     public User(String userName, String userEmail, String userPass) {
@@ -58,23 +57,27 @@ public class User implements Serializable {
         this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
     }
 
-    public User(String userName, String userEmail, String userPass, List<Role> roleList) {
+    public User(String userName, String userEmail, String userPass, List<Role> roles) {
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
-        this.roleList = roleList;
+        this.roles = roles;
     }
 
 
     public List<String> getRolesAsStrings() {
-        if (roleList.isEmpty()) {
+        if (roles.isEmpty()) {
             return null;
         }
         List<String> rolesAsStrings = new ArrayList<>();
-        roleList.forEach((role) -> {
+        roles.forEach((role) -> {
             rolesAsStrings.add(role.getRoleName());
         });
         return rolesAsStrings;
+    }
+
+    public boolean verifyPassword(String pw) {
+        return (BCrypt.checkpw(pw, userPass));
     }
 
     public String getUserName() {
@@ -93,30 +96,33 @@ public class User implements Serializable {
         this.userEmail = userEmail;
     }
 
-    public boolean verifyPassword(String pw) {
-        return (BCrypt.checkpw(pw, userPass));
-    }
-
     public String getUserPass() {
-        return this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
+        return userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
     }
 
     public void setUserPass(String userPass) {
         this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt());
     }
 
-    public List<Role> getRoleList() {
-        return roleList;
+    public Owner getOwner() {
+        return owner;
     }
 
-    public void setRoleList(List<Role> roleList) {
-        this.roleList = roleList;
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public void addRole(Role userRole) {
-        roleList.add(userRole);
+        roles.add(userRole);
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -137,7 +143,7 @@ public class User implements Serializable {
                 "userName='" + userName + '\'' +
                 ", userEmail='" + userEmail + '\'' +
                 ", userPass='" + userPass + '\'' +
-                ", roleList=" + roleList +
+                ", roles=" + roles +
                 '}';
     }
 }

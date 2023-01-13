@@ -10,8 +10,8 @@ import java.util.List;
 
 public class UserDTOFacade {
 
-    private static UserDTOFacade instance;
     private static UserFacade userFacade;
+    private static UserDTOFacade instance;
 
     private UserDTOFacade() {}
 

@@ -152,7 +152,7 @@ public class UserResourceTest {
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("userName", equalTo(udto1.getUserName()))
-                .body("roleList", containsInAnyOrder(udto1.getRoleList().get(0)));
+                .body("roles", containsInAnyOrder(udto1.getRoles().get(0)));
     }
 
     @Test
@@ -185,7 +185,7 @@ public class UserResourceTest {
     @Test
     void updateUserTest() {
         udto1.setUserEmail("nyemail@gmail.com");
-        udto1.setRoleList(new ArrayList<>());
+        udto1.setRoles(new ArrayList<>());
         given()
                 .header("Content-type", ContentType.JSON)
                 .body(GSON.toJson(udto1))

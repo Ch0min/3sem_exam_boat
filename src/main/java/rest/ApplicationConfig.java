@@ -33,7 +33,10 @@ public class ApplicationConfig extends Application {
         resources.add(errorhandling.GenericExceptionMapper.class);
         resources.add(org.glassfish.jersey.server.wadl.internal.WadlResource.class);
 
-        resources.add(UserResource.class);
         resources.add(LoginResource.class);
+        resources.add(UserResource.class);
+        resources.add(BoatResource.class);
+        resources.add(OwnerResource.class);
+
     }
 }

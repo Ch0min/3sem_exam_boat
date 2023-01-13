@@ -13,12 +13,11 @@ public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
     @NotNull
     @Column(name = "role_name", length = 20)
     private String roleName;
     
-    @ManyToMany(mappedBy = "roleList")
+    @ManyToMany(mappedBy = "roles")
     private List<User> userList;
 
     public Role() {
