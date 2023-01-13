@@ -257,7 +257,7 @@ public class BoatResourceTest {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("boatID", equalTo(2))
+                .body("boatID", equalTo(bdto5.getBoatID()))
                 .body("boatName", equalTo("NyTesteNavn"));
     }
 
