@@ -2,7 +2,6 @@ package datafacades;
 
 import entities.*;
 import errorhandling.API_Exception;
-import errorhandling.NotFoundException;
 import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 
@@ -12,29 +11,28 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BoatFacadeTest {
+public class OwnerFacadeTest {
     private static EntityManagerFactory emf;
-    private static BoatFacade facade;
+    private static OwnerFacade facade;
 
     Role userRole, adminRole;
     User user, admin, user1, user2, user3, user4, user5, user6, user7, user8;
-    Harbour harbour1;
-    Harbour harbour2;
+    Harbour harbour1, harbour2;
     Owner owner1, owner2, owner3, owner4, owner5, owner6, owner7, owner8;
     Boat boat1, boat2, boat3, boat4, boat5;
 
-    public BoatFacadeTest() {
+    public OwnerFacadeTest() {
     }
 
     @BeforeAll
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
-        facade = BoatFacade.getBoatFacade(emf);
+        facade = OwnerFacade.getOwnerFacade(emf);
     }
 
     @AfterAll
     public static void tearDownClass() {
-        System.out.println("EXECUTION OF ALL TESTS IN BOATFACADETEST DONE");
+        System.out.println("EXECUTION OF ALL TESTS IN OWNERFACADETEST DONE");
     }
 
     @BeforeEach
@@ -148,51 +146,17 @@ public class BoatFacadeTest {
 
 
     @Test
-    void getAllBoats() throws API_Exception {
-        System.out.println("Testing getAllBoats...");
-        List<Boat> actual = facade.getAllBoats();
-        int expected = 5;
+    void getAllOwners() throws API_Exception {
+        System.out.println("Testing getAllOwners...");
+        List<Owner> actual = facade.getAllOwners();
+        int expected = 8;
         assertEquals(expected, actual.size());
     }
 
-    // Kan kun sende et tomt array tilbage.
     @Test
-    void getBoatsByHarbourTest() throws API_Exception {
-        System.out.println("Testing getBoatsByHarbour...");
-        List<Boat> boats = facade.getBoatsByHarbour(String.valueOf(harbour2));
-        assertEquals(harbour2.getBoats(), boats);
-    }
-
-    @Test
-    void createBoatTest() throws API_Exception {
-        System.out.println("Testing createBoat...");
-        Boat newBoat = new Boat("TestLiner", "Test 2023", "Testefar", "testliner.png", harbour1);
-        facade.createBoat(newBoat);
-        int actualSize = facade.getAllBoats().size();
-        assertEquals(6, actualSize);
-    }
-
-    @Test
-    void assignBoatToHarbourTest() throws API_Exception {
-        System.out.println("Testing assignBoatToHarbour - checking if the newly assigned HarbourID is equal to the expected HarbourID.");
-        Boat boat = facade.assignBoatToHarbour(boat2.getBoatID(), harbour1.getHarbourID());
-        int actual = harbour1.getHarbourID();
-        assertEquals(boat.getHarbour().getHarbourID(), actual);
-    }
-
-    @Test
-    void updateBoatTest() throws API_Exception {
-        System.out.println("Testing updateBoat...");
-        Boat expected = new Boat(boat5.getBoatID(), "TestingBoatBoat", "Test 1", "Testingboat", "Testingboat.png", harbour1);
-        Boat actual = facade.updateBoat(expected);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void deleteBoatTest() throws API_Exception {
-        System.out.println("Testing deleteBoat...");
-        facade.deleteBoat(boat1.getBoatID());
-        int actualSize = facade.getAllBoats().size();
-        assertEquals(4, actualSize);
+    void getOwnersByBoatTest() throws API_Exception {
+        System.out.println("Testing getOwnersByBoat...");
+        List<Owner> owners = facade.getOwnersByBoat(String.valueOf(boat3));
+        assertEquals(boat3.getOwners(), owners);
     }
 }

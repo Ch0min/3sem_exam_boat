@@ -1,40 +1,77 @@
-package datafacades;
+package rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dtos.BoatDTO;
+import dtos.HarbourDTO;
+import dtos.OwnerDTO;
+import dtos.UserDTO;
 import entities.*;
-import errorhandling.API_Exception;
-import errorhandling.NotFoundException;
-import org.junit.jupiter.api.*;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.parsing.Parser;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.util.HttpStatus;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
 
-public class BoatFacadeTest {
-    private static EntityManagerFactory emf;
-    private static BoatFacade facade;
+public class OwnerResourceTest {
+
+    private static final int SERVER_PORT = 7777;
+    private static final String SERVER_URL = "http://localhost/api";
 
     Role userRole, adminRole;
     User user, admin, user1, user2, user3, user4, user5, user6, user7, user8;
-    Harbour harbour1;
-    Harbour harbour2;
+    Harbour harbour1, harbour2;
     Owner owner1, owner2, owner3, owner4, owner5, owner6, owner7, owner8;
     Boat boat1, boat2, boat3, boat4, boat5;
 
-    public BoatFacadeTest() {
+    UserDTO udto, udtoA, udto1, udto2, udto3, udto4, udto5, udto6, udto7, udto8;
+    HarbourDTO hdto1, hdto2;
+    OwnerDTO odto1, odto2, odto3, odto4, odto5, odto6, odto7, odto8;
+    BoatDTO bdto1, bdto2, bdto3, bdto4, bdto5;
+
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
+    private static HttpServer httpServer;
+    private static EntityManagerFactory emf;
+
+    static HttpServer startServer() {
+        ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
+        return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
     }
 
     @BeforeAll
     public static void setUpClass() {
+        EMF_Creator.startREST_TestWithDB();
         emf = EMF_Creator.createEntityManagerFactoryForTest();
-        facade = BoatFacade.getBoatFacade(emf);
+        httpServer = startServer();
+        RestAssured.baseURI = SERVER_URL;
+        RestAssured.port = SERVER_PORT;
+        RestAssured.defaultParser = Parser.JSON;
     }
 
     @AfterAll
-    public static void tearDownClass() {
-        System.out.println("EXECUTION OF ALL TESTS IN BOATFACADETEST DONE");
+    public static void closeTestServer() {
+        EMF_Creator.endREST_TestWithDB();
+        httpServer.shutdownNow();
     }
 
     @BeforeEach
@@ -137,62 +174,55 @@ public class BoatFacadeTest {
             em.getTransaction().commit();
 
         } finally {
+            udto = new UserDTO(user);
+            udtoA = new UserDTO(admin);
+            udto1 = new UserDTO(user1);
+            udto2 = new UserDTO(user2);
+            udto3 = new UserDTO(user3);
+            udto4 = new UserDTO(user4);
+            udto5 = new UserDTO(user5);
+            udto6 = new UserDTO(user6);
+            udto7 = new UserDTO(user7);
+            udto8 = new UserDTO(user8);
+
+            hdto1 = new HarbourDTO(harbour1);
+            hdto2 = new HarbourDTO(harbour2);
+
+            odto1 = new OwnerDTO(owner1);
+            odto2 = new OwnerDTO(owner2);
+            odto3 = new OwnerDTO(owner3);
+            odto4 = new OwnerDTO(owner4);
+            odto5 = new OwnerDTO(owner5);
+            odto6 = new OwnerDTO(owner6);
+            odto7 = new OwnerDTO(owner7);
+            odto8 = new OwnerDTO(owner8);
+
+            bdto1 = new BoatDTO(boat1);
+            bdto2 = new BoatDTO(boat2);
+            bdto3 = new BoatDTO(boat3);
+            bdto4 = new BoatDTO(boat4);
+            bdto5 = new BoatDTO(boat5);
+
             em.close();
         }
     }
 
-    @AfterEach
-    public void tearDown() {
-        System.out.println("EXECUTION OF TEST DONE");
-    }
-
 
     @Test
-    void getAllBoats() throws API_Exception {
-        System.out.println("Testing getAllBoats...");
-        List<Boat> actual = facade.getAllBoats();
-        int expected = 5;
-        assertEquals(expected, actual.size());
-    }
-
-    // Kan kun sende et tomt array tilbage.
-    @Test
-    void getBoatsByHarbourTest() throws API_Exception {
-        System.out.println("Testing getBoatsByHarbour...");
-        List<Boat> boats = facade.getBoatsByHarbour(String.valueOf(harbour2));
-        assertEquals(harbour2.getBoats(), boats);
+    public void testServerIsUp() {
+        System.out.println("Testing is server UP");
+        given().when().get("/owners/all").then().statusCode(200);
     }
 
     @Test
-    void createBoatTest() throws API_Exception {
-        System.out.println("Testing createBoat...");
-        Boat newBoat = new Boat("TestLiner", "Test 2023", "Testefar", "testliner.png", harbour1);
-        facade.createBoat(newBoat);
-        int actualSize = facade.getAllBoats().size();
-        assertEquals(6, actualSize);
-    }
-
-    @Test
-    void assignBoatToHarbourTest() throws API_Exception {
-        System.out.println("Testing assignBoatToHarbour - checking if the newly assigned HarbourID is equal to the expected HarbourID.");
-        Boat boat = facade.assignBoatToHarbour(boat2.getBoatID(), harbour1.getHarbourID());
-        int actual = harbour1.getHarbourID();
-        assertEquals(boat.getHarbour().getHarbourID(), actual);
-    }
-
-    @Test
-    void updateBoatTest() throws API_Exception {
-        System.out.println("Testing updateBoat...");
-        Boat expected = new Boat(boat5.getBoatID(), "TestingBoatBoat", "Test 1", "Testingboat", "Testingboat.png", harbour1);
-        Boat actual = facade.updateBoat(expected);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void deleteBoatTest() throws API_Exception {
-        System.out.println("Testing deleteBoat...");
-        facade.deleteBoat(boat1.getBoatID());
-        int actualSize = facade.getAllBoats().size();
-        assertEquals(4, actualSize);
+    void getAllOwnersTest() {
+        List<OwnerDTO> ownerDTOs;
+        ownerDTOs = given()
+                .contentType("application/json")
+                .when()
+                .get("/owners/all")
+                .then()
+                .extract().body().jsonPath().getList("", OwnerDTO.class);
+        assertThat(ownerDTOs, containsInAnyOrder(odto1, odto2, odto3, odto4, odto5, odto6, odto7, odto8));
     }
 }

@@ -16,12 +16,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserDTOFacadeTest {
-
     private static EntityManagerFactory emf;
     private static UserDTOFacade facade;
 
-    UserDTO udto1, udto2;
+    Role userRole, adminRole;
+    User u1, u2;
 
+    UserDTO udto1, udto2;
 
     public UserDTOFacadeTest() throws ParseException {
     }
@@ -34,41 +35,44 @@ public class UserDTOFacadeTest {
 
     @AfterAll
     public static void tearDownClass() {
-
+        System.out.println("EXECUTION OF ALL TESTS IN USERDTOFACADETEST DONE");
     }
 
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        Role userRole = new Role("user");
-        User u1 = new User();
-        User u2 = new User();
 
-        u1.setUserName("Mark");
-        u1.setUserPass("test123");
-        u1.setUserEmail("mark@gmail.com");
-        u1.addRole(userRole);
-        u2.setUserName("Fido");
-        u2.setUserPass("test123");
-        u2.setUserEmail("fido@gmail.com");
-        u2.addRole(userRole);
         try {
             em.getTransaction().begin();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.createNamedQuery("Role.deleteAllRows").executeUpdate();
+
+            userRole = new Role("user");
+            adminRole = new Role("admin");
+
+            u1 = new User("fid0", "fido@gmail.com", "test123");
+            u2 = new User("marklundgaard", "marklundgaard@gmail.com", "test123");
+            u1.addRole(userRole);
+            u2.addRole(userRole);
+
             em.persist(userRole);
+            em.persist(adminRole);
+
             em.persist(u1);
             em.persist(u2);
+
             em.getTransaction().commit();
         } finally {
             udto1 = new UserDTO(u1);
             udto2 = new UserDTO(u2);
+
             em.close();
         }
     }
 
     @AfterEach
     public void tearDown() {
+        System.out.println("EXECUTION OF TEST DONE");
     }
 
     @Test
@@ -86,7 +90,7 @@ public class UserDTOFacadeTest {
 
     @Test
     void createUserDTOTest() throws API_Exception {
-        UserDTO userDTO = new UserDTO(new User("NyBruger","nybruger@gmail.com","test123"));
+        UserDTO userDTO = new UserDTO(new User("NyBruger", "nybruger@gmail.com", "test123"));
         facade.createUser(userDTO);
         assertNotNull(userDTO.getUserName());
         int actualSize = facade.getAllUsers().size();
@@ -95,7 +99,7 @@ public class UserDTOFacadeTest {
 
     @Test
     void createNoDuplicateUserDTOsTest() throws API_Exception {
-        UserDTO userDTO = new UserDTO(new User("Mark", "mark@gmail.com","test123"));
+        UserDTO userDTO = new UserDTO(new User("fid0", "mark@gmail.com", "test123"));
         assertThrows(API_Exception.class, () -> facade.createUser(userDTO));
     }
 
@@ -104,12 +108,12 @@ public class UserDTOFacadeTest {
         UserDTO expected = new UserDTO(udto1.getEntity());
         expected.setUserEmail("testefar@gmail.com");
         UserDTO actual = facade.updateUser(expected);
-        assertEquals(expected,actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    void deleteUserDTOTest() throws API_Exception, NotFoundException {
-        facade.deleteUser("Mark");
+    void deleteUserDTOTest() throws API_Exception{
+        facade.deleteUser("fid0");
         int actualSize = facade.getAllUsers().size();
         assertEquals(1, actualSize);
     }

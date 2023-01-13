@@ -52,7 +52,7 @@ public class BoatResource {
     @Path("/assign/{boatID}/{harbourID}")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response addUserToTrainingSession(@PathParam("boatID") int boatID,
+    public Response assignBoatToHarbour(@PathParam("boatID") int boatID,
                                              @PathParam("harbourID") int harbourID) throws API_Exception {
         return Response.ok().entity(GSON.toJson(boatDTOFacade.assignBoatToHarbour(boatID, harbourID)))
                 .type(MediaType.APPLICATION_JSON_TYPE.withCharset(StandardCharsets.UTF_8.name())).build();

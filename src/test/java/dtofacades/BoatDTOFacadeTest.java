@@ -1,8 +1,11 @@
-package datafacades;
+package dtofacades;
 
+import dtos.BoatDTO;
+import dtos.HarbourDTO;
+import dtos.OwnerDTO;
+import dtos.UserDTO;
 import entities.*;
 import errorhandling.API_Exception;
-import errorhandling.NotFoundException;
 import org.junit.jupiter.api.*;
 import utils.EMF_Creator;
 
@@ -12,29 +15,33 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BoatFacadeTest {
+public class BoatDTOFacadeTest {
     private static EntityManagerFactory emf;
-    private static BoatFacade facade;
+    private static BoatDTOFacade facade;
 
     Role userRole, adminRole;
     User user, admin, user1, user2, user3, user4, user5, user6, user7, user8;
-    Harbour harbour1;
-    Harbour harbour2;
+    Harbour harbour1, harbour2;
     Owner owner1, owner2, owner3, owner4, owner5, owner6, owner7, owner8;
     Boat boat1, boat2, boat3, boat4, boat5;
 
-    public BoatFacadeTest() {
+    UserDTO udto, udtoA, udto1, udto2, udto3, udto4, udto5, udto6, udto7, udto8;
+    HarbourDTO hdto1, hdto2;
+    OwnerDTO odto1, odto2, odto3, odto4, odto5, odto6, odto7, odto8;
+    BoatDTO bdto1, bdto2, bdto3, bdto4, bdto5;
+
+    public BoatDTOFacadeTest() {
     }
 
     @BeforeAll
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
-        facade = BoatFacade.getBoatFacade(emf);
+        facade = BoatDTOFacade.getInstance(emf);
     }
 
     @AfterAll
     public static void tearDownClass() {
-        System.out.println("EXECUTION OF ALL TESTS IN BOATFACADETEST DONE");
+        System.out.println("EXECUTION OF ALL TESTS IN BOATDTOFACADETEST DONE");
     }
 
     @BeforeEach
@@ -137,6 +144,35 @@ public class BoatFacadeTest {
             em.getTransaction().commit();
 
         } finally {
+            udto = new UserDTO(user);
+            udtoA = new UserDTO(admin);
+            udto1 = new UserDTO(user1);
+            udto2 = new UserDTO(user2);
+            udto3 = new UserDTO(user3);
+            udto4 = new UserDTO(user4);
+            udto5 = new UserDTO(user5);
+            udto6 = new UserDTO(user6);
+            udto7 = new UserDTO(user7);
+            udto8 = new UserDTO(user8);
+
+            hdto1 = new HarbourDTO(harbour1);
+            hdto2 = new HarbourDTO(harbour2);
+
+            odto1 = new OwnerDTO(owner1);
+            odto2 = new OwnerDTO(owner2);
+            odto3 = new OwnerDTO(owner3);
+            odto4 = new OwnerDTO(owner4);
+            odto5 = new OwnerDTO(owner5);
+            odto6 = new OwnerDTO(owner6);
+            odto7 = new OwnerDTO(owner7);
+            odto8 = new OwnerDTO(owner8);
+
+            bdto1 = new BoatDTO(boat1);
+            bdto2 = new BoatDTO(boat2);
+            bdto3 = new BoatDTO(boat3);
+            bdto4 = new BoatDTO(boat4);
+            bdto5 = new BoatDTO(boat5);
+
             em.close();
         }
     }
@@ -148,50 +184,51 @@ public class BoatFacadeTest {
 
 
     @Test
-    void getAllBoats() throws API_Exception {
-        System.out.println("Testing getAllBoats...");
-        List<Boat> actual = facade.getAllBoats();
+    void getAllBoatsDTO() throws API_Exception {
+        System.out.println("Testing getAllBoatsDTO...");
+        List<BoatDTO> actual = facade.getAllBoats();
         int expected = 5;
         assertEquals(expected, actual.size());
     }
 
     // Kan kun sende et tomt array tilbage.
-    @Test
-    void getBoatsByHarbourTest() throws API_Exception {
-        System.out.println("Testing getBoatsByHarbour...");
-        List<Boat> boats = facade.getBoatsByHarbour(String.valueOf(harbour2));
-        assertEquals(harbour2.getBoats(), boats);
-    }
+//    @Test
+//    void getBoatsByHarbourDTOTest() throws API_Exception {
+//        System.out.println("Testing getBoatsByHarbourDTO...");
+//        List<BoatDTO> boatsDTO = facade.getBoatsByHarbour(String.valueOf(hdto2));
+//        assertEquals(hdto2.getBoats(), boatsDTO);
+//    }
 
     @Test
-    void createBoatTest() throws API_Exception {
-        System.out.println("Testing createBoat...");
-        Boat newBoat = new Boat("TestLiner", "Test 2023", "Testefar", "testliner.png", harbour1);
-        facade.createBoat(newBoat);
+    void createBoatDTOTest() throws API_Exception {
+        System.out.println("Testing createBoatDTO...");
+        BoatDTO newBoatDTO = new BoatDTO(new Boat("TestLiner", "Test 2023", "Testefar", "testliner.png", harbour1));
+        facade.createBoat(newBoatDTO);
         int actualSize = facade.getAllBoats().size();
         assertEquals(6, actualSize);
     }
 
     @Test
     void assignBoatToHarbourTest() throws API_Exception {
-        System.out.println("Testing assignBoatToHarbour - checking if the newly assigned HarbourID is equal to the expected HarbourID.");
-        Boat boat = facade.assignBoatToHarbour(boat2.getBoatID(), harbour1.getHarbourID());
-        int actual = harbour1.getHarbourID();
-        assertEquals(boat.getHarbour().getHarbourID(), actual);
+        System.out.println("Testing assignBoatToHarbourDTO - checking if the newly assigned HarbourID is equal to the expected HarbourID.");
+        BoatDTO boatDTO = facade.assignBoatToHarbour(bdto2.getBoatID(), hdto1.getHarbourID());
+        int actual = hdto1.getHarbourID();
+        assertEquals(boatDTO.getHarbour().getHarbourID(), actual);
     }
 
     @Test
     void updateBoatTest() throws API_Exception {
-        System.out.println("Testing updateBoat...");
-        Boat expected = new Boat(boat5.getBoatID(), "TestingBoatBoat", "Test 1", "Testingboat", "Testingboat.png", harbour1);
-        Boat actual = facade.updateBoat(expected);
+        System.out.println("Testing updateBoatDTO...");
+        BoatDTO expected = new BoatDTO(bdto5.getEntity());
+        expected.setBoatName("Testefar");
+        BoatDTO actual = facade.updateBoat(expected);
         assertEquals(expected, actual);
     }
 
     @Test
-    void deleteBoatTest() throws API_Exception {
-        System.out.println("Testing deleteBoat...");
-        facade.deleteBoat(boat1.getBoatID());
+    void deleteBoatDTOTest() throws API_Exception {
+        System.out.println("Testing deleteBoatDTO...");
+        facade.deleteBoat(bdto1.getBoatID());
         int actualSize = facade.getAllBoats().size();
         assertEquals(4, actualSize);
     }

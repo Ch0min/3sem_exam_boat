@@ -36,8 +36,11 @@ public class UserResourceTest {
 
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
-    UserDTO udto1, udto2;
 
+    Role userRole, adminRole;
+    User u1, u2;
+
+    UserDTO udto1, udto2;
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -65,33 +68,35 @@ public class UserResourceTest {
         EMF_Creator.endREST_TestWithDB();
         httpServer.shutdownNow();
     }
+
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        Role userRole = new Role("user");
-        User u1 = new User();
-        User u2 = new User();
 
-        u1.setUserName("Mark");
-        u1.setUserPass("test123");
-        u1.setUserEmail("mark@gmail.com");
-        u1.addRole(userRole);
-        u2.setUserName("Fido");
-        u2.setUserPass("test123");
-        u2.setUserEmail("fido@gmail.com");
-        u2.addRole(userRole);
         try {
             em.getTransaction().begin();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             em.createNamedQuery("Role.deleteAllRows").executeUpdate();
 
+            userRole = new Role("user");
+            adminRole = new Role("admin");
+
+            u1 = new User("fid0", "fido@gmail.com", "test123");
+            u2 = new User("marklundgaard", "marklundgaard@gmail.com", "test123");
+            u1.addRole(userRole);
+            u2.addRole(userRole);
+
             em.persist(userRole);
+            em.persist(adminRole);
+
             em.persist(u1);
             em.persist(u2);
+
             em.getTransaction().commit();
         } finally {
             udto1 = new UserDTO(u1);
             udto2 = new UserDTO(u2);
+
             em.close();
         }
     }
@@ -127,7 +132,7 @@ public class UserResourceTest {
         response
                 .then()
                 .assertThat()
-                .body("userName", equalTo("Mark"));
+                .body("userName", equalTo("fid0"));
     }
 
     @Test
@@ -157,10 +162,7 @@ public class UserResourceTest {
 
     @Test
     void createUserTest() {
-        User user = new User();
-        user.setUserName("Chris");
-        user.setUserPass("PW");
-        user.setUserEmail("chris@gmail.com");
+        User user = new User("Perle", "test123", "perle@gmail.com");
         Role role = new Role("user");
         user.addRole(role);
 
@@ -176,26 +178,24 @@ public class UserResourceTest {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("userName", equalTo("Chris"))
-                .body("roleList", containsInAnyOrder("user"));
-
-
+                .body("userName", equalTo("Perle"))
+                .body("roles", containsInAnyOrder("user"));
     }
 
     @Test
     void updateUserTest() {
-        udto1.setUserEmail("nyemail@gmail.com");
-        udto1.setRoles(new ArrayList<>());
+        udto2.setUserEmail("nytestemail@gmail.com");
+        udto2.setRoles(new ArrayList<>());
         given()
                 .header("Content-type", ContentType.JSON)
-                .body(GSON.toJson(udto1))
+                .body(GSON.toJson(udto2))
                 .when()
-                .put("/users/" + udto1.getUserName())
+                .put("/users/" + udto2.getUserName())
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("userName", equalTo("Mark"))
-                .body("userEmail", equalTo("nyemail@gmail.com"));
+                .body("userName", equalTo("marklundgaard"))
+                .body("userEmail", equalTo("nytestemail@gmail.com"));
     }
 
     @Test

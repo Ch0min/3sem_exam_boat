@@ -150,7 +150,7 @@ public class LoginEndpointTest {
     }
 
     @Test
-    public void testAutorizedUserCannotAccesAdminPage() {
+    public void testAutorizedUserCannotAccessAdminPage() {
         login("user", "test");
         given()
                 .contentType("application/json")
@@ -161,7 +161,7 @@ public class LoginEndpointTest {
     }
 
     @Test
-    public void testAutorizedAdminCannotAccesUserPage() {
+    public void testAutorizedAdminCannotAccessUserPage() {
         login("admin", "test");
         given()
                 .contentType("application/json")

@@ -115,22 +115,15 @@ public class BoatFacade {
         }
     }
 
-    // US-7 "HUSK AT CASCADETYPE REMOVE, SIDEN HVIS EN BÅD IKKE ER DER, SÅ SKAL OWNERS OGSÅ DELETES!!!!!"
+    // US-7
     public Boat deleteBoat(int boatID) throws API_Exception {
         EntityManager em = getEntityManager();
         Boat boat = em.find(Boat.class, boatID);
 
         try {
             em.getTransaction().begin();
-            boat.getOwners().forEach(owner -> {
-                if (owner.getBoats().isEmpty()) {
-                    em.merge(owner);
-                }
-            });
-
             em.remove(boat);
             em.getTransaction().commit();
-
         } catch (Exception e) {
             if (boat == null) {
                 throw new API_Exception("Can't delete Boat with the ID: " + boat.getBoatID(), 400, e);

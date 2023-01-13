@@ -49,6 +49,14 @@ public class Boat {
         this.harbour = harbour;
     }
 
+    public Boat(Integer boatID, String boatBrand, String boatMake, String boatName, String boatImage, Harbour harbour) {
+        this.boatID = boatID;
+        this.boatBrand = boatBrand;
+        this.boatMake = boatMake;
+        this.boatName = boatName;
+        this.boatImage = boatImage;
+        this.harbour = harbour;
+    }
 
     public Integer getBoatID() {
         return boatID;
