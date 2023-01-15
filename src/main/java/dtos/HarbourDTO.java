@@ -2,6 +2,7 @@ package dtos;
 
 import entities.Boat;
 import entities.Harbour;
+import entities.Owner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,12 @@ public class HarbourDTO {
         harbour.getBoatsAsStrings();
 
         return harbour;
+    }
+
+    public static List<HarbourDTO> getHarbourDTOs(List<Harbour> harbours){
+        List<HarbourDTO> harbourDTOs = new ArrayList<>();
+        harbours.forEach(harbour -> harbourDTOs.add(new HarbourDTO(harbour)));
+        return harbourDTOs;
     }
 
     public int getHarbourID() {

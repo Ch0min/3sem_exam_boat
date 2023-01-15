@@ -2,9 +2,8 @@ package datafacades;
 
 import entities.Boat;
 import entities.Harbour;
-import entities.User;
+import entities.Role;
 import errorhandling.API_Exception;
-import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -62,13 +61,12 @@ public class BoatFacade {
     // US-4
     public Boat createBoat(Boat boat) throws API_Exception {
         EntityManager em = getEntityManager();
-
         try {
             em.getTransaction().begin();
             em.persist(boat);
             em.getTransaction().commit();
         } catch (Exception e) {
-            throw new API_Exception("Can't create Boat: " + boat.getBoatName() + "in the system!");
+            throw new API_Exception("Can't create Boat: " + boat.getBoatName() + " in the system!");
         } finally {
             em.close();
         }
@@ -99,6 +97,22 @@ public class BoatFacade {
     }
 
     // US-6 - Starter med at update Boat, og så senere finde ud af om jeg kan update alt dvs. owner og harbour.
+//    public Boat updateBoat(Boat boat) throws API_Exception {
+//        EntityManager em = getEntityManager();
+//
+//        try {
+//            em.find(Boat.class, boat.getBoatID());
+//            em.getTransaction().begin();
+//            Boat b = em.merge(boat);
+//            em.getTransaction().commit();
+//            return b;
+//        } catch (Exception e) {
+//            throw new API_Exception("Can't update Boat with the ID: " + boat.getBoatID(), 400, e);
+//        } finally {
+//            em.close();
+//        }
+//    }
+
     public Boat updateBoat(Boat boat) throws API_Exception {
         EntityManager em = getEntityManager();
 

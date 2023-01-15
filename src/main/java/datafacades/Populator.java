@@ -15,10 +15,10 @@ public class Populator {
         Role userRole = new Role("user");
         Role adminRole = new Role("admin");
 
-        User user = new User("user", "user@gmail.com","test123");
-        User admin = new User("admin", "admin@gmail.com","test123");
+        User user = new User("u", "user@gmail.com","test123");
+        User admin = new User("a", "admin@gmail.com","test123");
         User user1 = new User("fid0", "fido@gmail.com","test123");
-        User user2 = new User("marklundgaard", "marklundgaard@gmail.com","test123");
+        User user2 = new User("mark", "marklundgaard@gmail.com","test123");
         User user3 = new User("ballademager", "bm@gmail.com","test123");
         User user4 = new User("lynper", "perper@gmail.com","test123");
         User user5 = new User("nickj", "nickjensen@gmail.com","test123");
@@ -83,10 +83,13 @@ public class Populator {
         admin.addRole(adminRole);
         user.addRole(userRole);
         user1.addRole(userRole);
-        user2.addRole(userRole);
+        user2.addRole(adminRole);
         user3.addRole(userRole);
         user4.addRole(userRole);
         user5.addRole(userRole);
+        user6.addRole(userRole);
+        user7.addRole(userRole);
+        user8.addRole(userRole);
 
         boat2.addOwner(owner1);
 

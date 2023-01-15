@@ -64,13 +64,13 @@ public class UserFacade {
 
     public User getUserByUserName(String userName) throws API_Exception {
         EntityManager em = getEntityManager();
-        try{
+
+        try {
             User u = em.find(User.class, userName);
             return u;
         } catch (Exception e){
             throw new API_Exception("Can't find a user with the username: " + userName, 404, e);
         }
-
     }
 
     public User createUser(User user) throws API_Exception {

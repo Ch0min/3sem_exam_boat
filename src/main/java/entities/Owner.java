@@ -23,7 +23,7 @@ public class Owner {
     @Column(name = "owner_phone", nullable = false)
     private Integer ownerPhone;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name="user_name", referencedColumnName = "user_name")
     private User user;
 

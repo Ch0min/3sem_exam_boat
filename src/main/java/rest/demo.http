@@ -21,8 +21,8 @@ POST http://localhost:8080/api/users/
 Content-Type: application/json
 
 {
-  "userName": "olfert",
-  "userEmail": "olfertsen@gmail.com",
+  "userName": "lasse",
+  "userEmail": "lasse@gmail.com",
   "userPass": "test123"
 }
 
@@ -52,16 +52,16 @@ GET http://localhost:8080/api/boats/Køge Marina
 Content-Type: application/json
 
 ### CREATE BOAT
-POST http://localhost:8080/api/boats/
+POST http://localhost:8080/api/boats
 Content-Type: application/json
 
 {
-  "boatBrand": "TestBoat2",
-  "boatMake": "T2",
-  "boatName": "Testen2",
-  "boatImage": "boattest2.png",
+  "boatBrand": "TestBoat4",
+  "boatMake": "T4",
+  "boatName": "Testen4",
+  "boatImage": "boattest4.png",
   "harbour": {
-    "harbourID": 2
+    "harbourID": 1
   }
 }
 
@@ -70,19 +70,16 @@ POST http://localhost:8080/api/boats/assign/7/2
 Content-Type: application/json
 
 ### UPDATE BOAT - virker kun inklusiv harbour.
-PUT http://localhost:8080/api/boats/7
+PUT http://localhost:8080/api/boats/update/5
 Content-Type: application/json
 
 {
-  "boatBrand": "TestBoat2",
-  "boatMake": "T2",
-  "boatName": "Testen2",
-  "boatImage": "boattest2.png",
+  "boatBrand": "Technomar",
+  "boatMake": "Velvet 7",
+  "boatName": "Bigboy",
+  "boatImage": "bigboat.png",
   "harbour": {
-    "harbourID": 2,
-    "harbourName": "Køge Marina",
-    "harbourAddress": "Bådehavnen 2",
-    "harbourCapacity": 700
+    "harbourID": 1
   }
 }
 
@@ -104,6 +101,17 @@ GET http://localhost:8080/api/owners/Fidos Båd
 Content-Type: application/json
 
 
+
+
+##### ***HARBOUR ENDPOINTS*** #####
+
+### GET ALL HARBOURS
+GET http://localhost:8080/api/harbours/all
+Content-Type: application/json
+
+### GET HARBOUR BY HARBOUR NAME
+GET http://localhost:8080/api/owners/Fidos Båd
+Content-Type: application/json
 
 
 

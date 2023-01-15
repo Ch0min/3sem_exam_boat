@@ -253,7 +253,7 @@ public class BoatResourceTest {
                 .header("Content-type", ContentType.JSON)
                 .body(GSON.toJson(bdto5))
                 .when()
-                .put("/boats/" + bdto5.getBoatID())
+                .put("/boats/update/" + bdto5.getBoatID())
                 .then()
                 .assertThat()
                 .statusCode(200)

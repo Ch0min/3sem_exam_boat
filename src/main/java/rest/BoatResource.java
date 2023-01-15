@@ -9,6 +9,7 @@ import errorhandling.API_Exception;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -59,7 +60,7 @@ public class BoatResource {
     }
 
     @PUT
-    @Path("/{boatID}")
+    @Path("/update/{boatID}")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     public Response updateBoat(@PathParam("boatID") int boatID, String content) throws API_Exception {

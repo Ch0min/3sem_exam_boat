@@ -28,7 +28,7 @@ public class User implements Serializable {
     @Column(name = "user_pass")
     private String userPass;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Owner owner;
 
     @ManyToMany

@@ -1,5 +1,6 @@
 package rest;
 
+import datafacades.HarbourFacade;
 import security.LoginEndpoint;
 
 import javax.ws.rs.core.Application;
@@ -37,6 +38,7 @@ public class ApplicationConfig extends Application {
         resources.add(UserResource.class);
         resources.add(BoatResource.class);
         resources.add(OwnerResource.class);
+        resources.add(HarbourResource.class);
 
     }
 }
