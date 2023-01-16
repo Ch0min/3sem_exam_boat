@@ -62,6 +62,7 @@ public class Populator {
         em.persist(user7);
         em.persist(user8);
 
+
         em.persist(harbour1);
         em.persist(harbour2);
 
